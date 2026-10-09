@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeTube</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0f0f0f;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      padding: 15px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #272727;
+    }
+    h1 {
+      color: #ff0000;
+      font-size: 24px;
+      letter-spacing: -1px;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .video-card {
+      background-color: #1f1f1f;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background-color: #000;
+      display: block;
+    }
+    .video-info {
+      padding: 12px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>MeTube</h1>
+  </header>
+
+  <div id="videoContainer" class="video-grid"></div>
+
+  <script>
+    const BIN_ID = '6ac907e0ac6210605a22f1d5';
+    const API_KEY = '$2a$10$G8QimcR2WSYfENqVonrsM.FNt5AWlTmTu7zaWDCYEPyZdsEJxXf1K';
+
+    async function videolariYukle() {
+      try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+          headers: { 'X-Master-Key': API_KEY }
+        });
+        const data = await res.json();
+        const videolar = data.record || [];
+
+        const container = document.getElementById('videoContainer');
+        container.innerHTML = '';
+        
+        videolar.forEach(video => {
+          container.innerHTML += `
+            <div class="video-card">
+              <video controls preload="metadata">
+                <source src="${video.url}" type="video/mp4">
+                Tarayıcınız video oynatmayı desteklemiyor.
+              </video>
+              <div class="video-info">${video.baslik}</div>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error('Videolar yüklenirken hata oluştu:', err);
+      }
+    }
+
+    videolariYukle();
+  </script>
+</body>
+</html>
